@@ -3,6 +3,16 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+data/MADOS
+marinext/trained_models/1
+marinext/trained_models/2
+marinext/trained_models/3
+marinext/trained_models/4
+marinext/trained_models/5
+
+
+#mac
+.DS_Store
 # C extensions
 *.so
 
