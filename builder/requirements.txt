@@ -26,3 +26,4 @@ pyresample==1.24.1
 h5py==3.7.0
 tqdm==4.66.2
 tensorboard==2.14.0
+runpod
