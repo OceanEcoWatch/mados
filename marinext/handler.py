@@ -29,12 +29,14 @@ def seed_all(seed):
     torch.backends.cudnn.benchmark = False
 
 
-def load_models(device: torch.device):
-    current_dir = os.path.dirname(os.path.realpath(__file__))
+def load_models(device: str):
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    print(current_dir)
     models_files = glob.glob(os.path.join(current_dir, "trained_models", "*.pth"))
+    print(models_files)
     models_list = []
     for model_file in models_files:
-        model = MariNext(in_chans=12, num_classes=15)
+        model = MariNext(in_chans=11, num_classes=15)
 
         model.to(device)
 
@@ -66,13 +68,14 @@ def handler(job):
     enc_bytes = job_input["image"]
     image_bytes = base64.b64decode(enc_bytes)
 
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    device = "cuda" if torch.cuda.is_available() else "cpu"
     models_list = load_models(device)
 
     with rasterio.open(io.BytesIO(image_bytes)) as src:
         image = src.read()
 
     with torch.no_grad():
+        image = torch.from_numpy(image.astype(np.float32)).unsqueeze(0)
         image = image.to(device)
         all_predictions = []
         for model in models_list:
