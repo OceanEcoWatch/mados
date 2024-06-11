@@ -4,26 +4,32 @@ import io
 import json
 import logging
 import os
+import random
 
+import numpy as np
 import rasterio
 import runpod.serverless
 import torch
 from marinext_wrapper import MariNext
+from torch.nn import functional as F
 
 logging.basicConfig(level=logging.INFO)
 
 LOGGER = logging.getLogger(__name__)
 
 
-def handler(job):
-    job_input = job["input"]
-    enc_bytes = job_input["image"]
-    image_bytes = base64.b64decode(enc_bytes)
+def seed_all(seed):
+    # Pytorch Reproducibility
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed)
+    torch.cuda.manual_seed(seed)
+    np.random.seed(seed)
+    random.seed(seed)
+    torch.backends.cudnn.deterministic = True
+    torch.backends.cudnn.benchmark = False
 
-    with rasterio.open(io.BytesIO(image_bytes)) as src:
-        image = src.read()
 
-    device = "cuda" if torch.cuda.is_available() else "cpu"
+def load_models(device: torch.device):
     current_dir = os.path.dirname(os.path.realpath(__file__))
     models_files = glob.glob(os.path.join(current_dir, "trained_models", "*.pth"))
     models_list = []
@@ -50,12 +56,40 @@ def handler(job):
             torch.cuda.empty_cache()
 
         model.eval()
-
         models_list.append(model)
 
-    prediction = predict(model, image=image, device=device)
+    return models_list
 
-    base_64_prediction = base64.b64encode(prediction.tobytes()).decode("utf-8")
+
+def handler(job):
+    job_input = job["input"]
+    enc_bytes = job_input["image"]
+    image_bytes = base64.b64decode(enc_bytes)
+
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    models_list = load_models(device)
+
+    with rasterio.open(io.BytesIO(image_bytes)) as src:
+        image = src.read()
+
+    with torch.no_grad():
+        image = image.to(device)
+        all_predictions = []
+        for model in models_list:
+            logits = model(image)
+            logits = F.upsample(
+                input=logits,
+                size=(image.shape[2], image.shape[3]),
+                mode="bilinear",
+            )
+            probs = torch.nn.functional.softmax(logits, dim=1)
+            predictions = probs.argmax(1)
+            all_predictions.append(predictions)
+
+        all_predictions = torch.cat(all_predictions)
+        predictions = torch.mode(all_predictions, dim=0, keepdim=True)[0].cpu().numpy()
+
+    base_64_prediction = base64.b64encode(predictions.tobytes()).decode("utf-8")
     return json.dumps({"prediction": base_64_prediction})
 
 
