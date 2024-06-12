@@ -91,9 +91,15 @@ def handler(job):
 
         all_predictions = torch.cat(all_predictions)
         predictions = torch.mode(all_predictions, dim=0, keepdim=True)[0].cpu().numpy()
-
+    print(predictions.shape)
     base_64_prediction = base64.b64encode(predictions.tobytes()).decode("utf-8")
-    return json.dumps({"prediction": base_64_prediction})
+    return json.dumps(
+        {
+            "prediction": base_64_prediction,
+            "shape": predictions.shape,
+            "dtype": str(predictions.dtype),
+        }
+    )
 
 
 runpod.serverless.start({"handler": handler})

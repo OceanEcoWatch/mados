@@ -29,16 +29,20 @@ def test_invoke(input_data: bytes):
         request_input={"input": {"image": encoded_input}},
         timeout=60,
     )
-
-    np_buffer = base64.b64decode(json.loads(run_request)["prediction"])
-    prediction = np.frombuffer(np_buffer, dtype=np.float32).reshape(
-        1, meta["height"], meta["width"]
+    request = json.loads(run_request)
+    dtype = request["dtype"]
+    shape = request["shape"]
+    print(shape)
+    print(dtype)
+    np_buffer = base64.b64decode(request["prediction"])
+    prediction = np.frombuffer(np_buffer, dtype=dtype).reshape(
+        shape[0], shape[1], shape[2]
     )
     meta.update(
         dtype="float32",
         count=1,
     )
-    with rasterio.open("tests/data/test_invoke.tiff", "w+", **meta) as dst:
+    with rasterio.open("tests/data/response_prediction.tiff", "w+", **meta) as dst:
         dst.write(prediction)
 
     # np.testing.assert_array_almost_equal(prediction, expected_numpy, decimal=3)
