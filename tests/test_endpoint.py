@@ -24,16 +24,13 @@ Band 1 (Coastal aerosol) - 443 nm ."""
 
 @pytest.fixture
 def input_data():
-    with open("tests/data/Scene_1_L2R_rhorc_6.tif", "rb") as f:
+    with open("tests/data/Scene_0_L2R_rhorc_7.tif", "rb") as f:
         return f.read()
 
 
 def test_invoke(input_data: bytes):
     with rasterio.open(io.BytesIO(input_data)) as src:
         meta = src.meta.copy()
-
-    # with rasterio.open(io.BytesIO(expected_prediction)) as src:
-    #     expected_numpy = src.read()
 
     encoded_input = base64.b64encode(input_data).decode("utf-8")
     endpoint = Endpoint(ENDPOINT_ID)
@@ -51,10 +48,14 @@ def test_invoke(input_data: bytes):
         shape[0], shape[1], shape[2]
     )
     meta.update(
-        dtype="float32",
+        dtype=dtype,
         count=1,
     )
     with rasterio.open("tests/data/response_prediction.tiff", "w+", **meta) as dst:
         dst.write(prediction)
 
-    # np.testing.assert_array_almost_equal(prediction, expected_numpy, decimal=3)
+    assert prediction.shape == (1, 240, 240)
+
+    # in classifification range
+    assert np.all(prediction >= 0)
+    assert np.all(prediction <= 15)

@@ -2,8 +2,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 import rasterio
 
-with rasterio.open("tests/data/Scene_0_L2R_rhorc_7.tif") as src:
+with rasterio.open("tests/data/response_prediction.tiff") as src:
     classification_image = src.read(1)
+    # unique pixel values
+    print(np.unique(classification_image))
 
 
 # Define a colormap
