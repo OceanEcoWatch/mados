@@ -4,6 +4,7 @@ __pycache__/
 *$py.class
 
 data/MADOS
+data/MADOS_nearest
 marinext/trained_models/1
 marinext/trained_models/2
 marinext/trained_models/3

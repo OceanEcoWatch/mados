@@ -22,8 +22,6 @@ RUN /miniconda/bin/conda run -n mados conda install pytables==3.7.0 -y
 
 # Add source files (Worker Template)
 ADD marinext .
-ADD logs /logs
-ADD data /data
 
 # Use ENTRYPOINT to ensure the Conda environment is activated
 ENTRYPOINT ["/miniconda/bin/conda", "run", "--no-capture-output", "-n", "mados"]

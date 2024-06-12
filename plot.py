@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import rasterio
 
-with rasterio.open("tests/data/test_invoke.tiff") as src:
+with rasterio.open("tests/data/Scene_0_L2R_rhorc_7.tif") as src:
     classification_image = src.read(1)
 
 

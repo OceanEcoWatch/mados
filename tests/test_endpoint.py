@@ -9,10 +9,22 @@ from runpod import Endpoint
 
 from tests.conftest import ENDPOINT_ID
 
+BANDS = """Band 2 (Blue) - 490 nm
+Band 3 (Green) - 560 nm
+Band 4 (Red) - 665 nm
+Band 5 (Red Edge 1) - 705 nm
+Band 6 (Red Edge 2) - 740 nm
+Band 7 (Red Edge 3) - 783 nm
+Band 8 (NIR) - 842 nm
+Band 8A (Narrow NIR) - 865 nm
+Band 11 (SWIR 1) - 1610 nm
+Band 12 (SWIR 2) - 2190 nm
+Band 1 (Coastal aerosol) - 443 nm ."""
+
 
 @pytest.fixture
 def input_data():
-    with open("tests/data/Scene_0_L2R_rhorc_7.tif", "rb") as f:
+    with open("tests/data/Scene_1_L2R_rhorc_6.tif", "rb") as f:
         return f.read()
 
 
