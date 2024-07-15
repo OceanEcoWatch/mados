@@ -1,11 +1,13 @@
-# MADOS Fork - Marine Debris and Oil Spill Detection
+# MADOS Deploy
 
 ## Overview
-This project is a fork of the Marine Debris and Oil Spill (MADOS) dataset repository, which focuses on detecting marine litter and oil spills using Sentinel-2 remote sensing data. The dataset poses a challenging semantic segmentation task with sparse annotations.
+This project is a fork of the Marine Debris and Oil Spill (MADOS) dataset repository, which focuses on detecting marine litter oil spills and other classifications using Sentinel-2 remote sensing data.
+
+The dataset and classification classes can be found [here](https://zenodo.org/records/10664073)
 
 This fork enhances the project by providing a Dockerized version, enabling easy deployment, in this case on Runpod Serverless.
 
-
+The
 
 ## Installation
 To facilitate easy deployment, this fork includes a Dockerized version. You can pull and run the Docker container locally or deploy it using Docker Hub.
@@ -32,6 +34,7 @@ To deploy this Dockerized version on a Runpod serverless instance, follow these 
 
 - Log in to your Runpod account and create a new serverless instance.
 - In the deployment settings, specify the Docker image to use: oceanecowatch/marinext:latest.
+- Add Container Run Command: `python -u /handler.py`
 - Deploy the instance and monitor the logs to ensure everything is running smoothly.
 For detailed instructions, refer to the Runpod documentation.
 
