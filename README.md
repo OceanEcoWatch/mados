@@ -9,8 +9,6 @@ In order to download MADOS go to https://doi.org/10.5281/zenodo.10664073.
 
 This fork enhances the project by providing a Dockerized version, enabling easy deployment, in this case on Runpod Serverless.
 
-The
-
 ## Installation
 To facilitate easy deployment, this fork includes a Dockerized version. You can pull and run the Docker container locally or deploy it using Docker Hub.
 
