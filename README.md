@@ -1,9 +1,11 @@
-# MADOS Deploy
+![MADOS Logo](./.github/MADOS_LOGO_text.png)
 
-## Overview
-This project is a fork of the Marine Debris and Oil Spill (MADOS) dataset repository, which focuses on detecting marine litter oil spills and other classifications using Sentinel-2 remote sensing data.
 
-The dataset and classification classes can be found [here](https://zenodo.org/records/10664073)
+[[`paper`](https://www.sciencedirect.com/science/article/pii/S0924271624000625)][[`project page`](https://marine-pollution.github.io/)][[`dataset`](https://zenodo.org/records/10664073)]
+
+This project is a fork of the Marine Debris and Oil Spill (MADOS) dataset repository, focusing on marine litter and oil spills. Other sea surface features that coexist with or have been suggested to be spectrally similar to them have also been considered. MADOS formulates a challenging semantic segmentation task using sparse annotations.
+
+In order to download MADOS go to https://doi.org/10.5281/zenodo.10664073.
 
 This fork enhances the project by providing a Dockerized version, enabling easy deployment, in this case on Runpod Serverless.
 
