@@ -3,72 +3,40 @@
 
 [[`paper`](https://www.sciencedirect.com/science/article/pii/S0924271624000625)][[`project page`](https://marine-pollution.github.io/)][[`dataset`](https://zenodo.org/records/10664073)]
 
-Marine Debris and Oil Spill (MADOS) is a marine pollution dataset based on Sentinel-2 remote sensing data, focusing on marine litter and oil spills. Other sea surface features that coexist with or have been suggested to be spectrally similar to them have also been considered. MADOS formulates a challenging semantic segmentation task using sparse annotations.
+This project is a fork of the Marine Debris and Oil Spill (MADOS) dataset repository, focusing on marine litter and oil spills. Other sea surface features that coexist with or have been suggested to be spectrally similar to them have also been considered. MADOS formulates a challenging semantic segmentation task using sparse annotations.
 
- In order to download MADOS go to https://doi.org/10.5281/zenodo.10664073.
- 
- ## Installation
- 
- ```bash
-conda create -n mados python=3.8.12
+In order to download MADOS go to https://doi.org/10.5281/zenodo.10664073.
 
-conda activate mados
+This fork enhances the project by providing a Dockerized version, enabling easy deployment, in this case on Runpod Serverless.
 
-conda install -c conda-forge gdal==3.3.2
+## Installation
+To facilitate easy deployment, this fork includes a Dockerized version. You can pull and run the Docker container locally or deploy it using Docker Hub.
 
-pip install -r requirements.txt --extra-index-url https://download.pytorch.org/whl/cu113 -f https://download.openmmlab.com/mmcv/dist/cu113/torch1.11/index.html
+### Add .env
 
-conda install pytables==3.7.0
+Add a .env file with the following keys
+
+```
+RUNPOD_API_KEY=<your_runpod_api_key>
+```
+### Pull the image from Docker Hub
+
+```
+docker pull oceanecowatch/marinext:latest
 ```
 
- ## Evaluate MariNeXt
-
-To evaluate MariNeXt, place the MADOS dataset under the `data` folder, download the pretrained models (5 different runs) from [here](https://drive.google.com/drive/folders/1VwkFp47TEvRVXHNbucBmmylfZwIUmCWx?usp=drive_link) and place them under the `marinext/trained_models` folder and then run the following:
-
-```bash
-python marinext/evaluation.py --path ./data/MADOS --model_path marinext/trained_models/1
+### Run the Docker container
 ```
-
- ## Train MariNeXt
-
-To train MariNeXt from scratch, run the following:
-
-
-```bash
-python marinext/train.py --path ./data/MADOS
+docker run -d -p 8080:8080 --name mados_container oceanecowatch/marinext:latest
 ```
+## Deploy on Runpod
+To deploy this Dockerized version on a Runpod serverless instance, follow these steps:
 
- ## Stack Patches
-
-To stack the image patches to form multispectral images, run the following:
-
-
-```bash
-python utils/stack_patches.py --path ./data/MADOS
-```
-
- ## Spectral Signatures Extraction
-To extract the spectal signatures of MADOS dataset (after stacking) and store them in a HDF5 Table file (DataFrame-like) run the following:
-
-```bash
-python utils/spectral_extraction.py --path ./data/MADOS_nearest
-```
-
-Alternatively, you can download the `dataset.h5` file from [here](https://drive.google.com/file/d/1BUIxcm1SLU9sqr8NE2FKJvJJPv2RLyk-/view?usp=sharing).
-
-To load the `dataset.h5`, run in a python cell the following:
-
-```python
-import pandas as pd
-
-hdf = pd.HDFStore('./data/dataset.h5', mode = 'r')
-
-df_train = hdf.select('Train')
-df_val = hdf.select('Validation')
-df_test = hdf.select('Test')
-
-hdf.close()
-```
+- Log in to your Runpod account and create a new serverless instance.
+- In the deployment settings, specify the Docker image to use: oceanecowatch/marinext:latest.
+- Add Container Run Command: `python -u /handler.py`
+- Deploy the instance and monitor the logs to ensure everything is running smoothly.
+For detailed instructions, refer to the Runpod documentation.
 
 
  ## Acknowledgment
@@ -79,4 +47,3 @@ This implementation is mainly based on [MARIDA](https://github.com/marine-debris
 
 If you find this repository useful, please consider giving a star :star: and citation:
  > Kikaki K., Kakogeorgiou I., Hoteit I., Karantzalos K. Detecting Marine Pollutants and Sea Surface Features with Deep Learning in Sentinel-2 Imagery. ISPRS Journal of Photogrammetry and Remote Sensing, 2024.
- 
